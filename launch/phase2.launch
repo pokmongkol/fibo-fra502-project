@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- FOLLOW BY: https://github.com/PranaliDesai/robomechtrix_ws -->
+<launch>
+  <!-- Robot pose -->
+  <arg name="x" default="0"/>
+  <arg name="y" default="0"/>
+  <arg name="z" default="0"/>
+  <arg name="roll" default="0"/>
+  <arg name="pitch" default="0"/>
+  <arg name="yaw" default="0"/>
+  <!-- World File -->
+  <arg name="my_world" default="$(find spw_robot)/worlds/empty.world"/>
+  <!-- Launch Gazebo World -->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="use_sim_time" value="true"/>
+    <arg name="debug" value="false"/>
+    <arg name="gui" value="true" />
+    <arg name="world_name" value="$(arg my_world)"/>
+  </include>
+  <!-- Find my robot Description-->
+  <param name="spw_robot_desc" command="$(find xacro)/xacro --inorder '$(find spw_robot)/models/robot.xacro'"/>
+  <!-- Spawn My Robot -->
+  <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" 
+        args="-urdf -param spw_robot_desc -model spw_robot 
+              -x $(arg x) -y $(arg y) -z $(arg z)
+              -R $(arg roll) -P $(arg pitch) -Y $(arg yaw)"/>
+  
+</launch>
