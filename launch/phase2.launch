@@ -8,6 +8,9 @@
   <arg name="roll" default="0"/>
   <arg name="pitch" default="0"/>
   <arg name="yaw" default="0"/>
+  <arg name="rvizconfig" default="$(find spw_robot)/rviz/urdf.rviz" />
+  <!-- ROBOT MODEL -->
+  <arg name="robot_model" default="$(find spw_robot)/models/robot.xacro"/>
   <!-- World File -->
   <arg name="my_world" default="$(find spw_robot)/worlds/empty.world"/>
   <!-- Launch Gazebo World -->
@@ -18,11 +21,13 @@
     <arg name="world_name" value="$(arg my_world)"/>
   </include>
   <!-- Find my robot Description-->
-  <param name="spw_robot_desc" command="$(find xacro)/xacro --inorder '$(find spw_robot)/models/robot.xacro'"/>
-  <!-- Spawn My Robot -->
-  <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen" 
-        args="-urdf -param spw_robot_desc -model spw_robot 
+  <param name="robot_description" command="$(find xacro)/xacro $(arg robot_model)"/>
+
+  <!-- NODE FOR GAZEBO -->
+  <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
+        args="-urdf -param robot_description -model spw_robot
               -x $(arg x) -y $(arg y) -z $(arg z)
               -R $(arg roll) -P $(arg pitch) -Y $(arg yaw)"/>
-  
+  <!-- NODE FOR RVIZ -->
+  <!-- <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true" /> -->
 </launch>
